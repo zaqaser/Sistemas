@@ -1,3 +1,4 @@
+Simulacion de filosofos comensales, el turno se pasa a la derecha y solo como aquel que tenga la ficha */
 int state[N];
 //Creca cuando un filosofo puede comer
 void test(int i){
