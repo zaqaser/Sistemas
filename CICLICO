@@ -1,18 +1,38 @@
-palillo:array[5] of semaphore
-(*palillo[i]=1)
- 
- process type filosofo(n:integer);
- begin 
-  repeat
-  
-  piensa;
-   
-  wait(palillo[n]);
-  wait(palillo[(n mod 5)+1]);
-  
-  come;
-  
-  signal(palillo[n]);
-  signal(palillo[(n mod 5)+1});
-  forever
-  end;
+int state[N];
+//Creca cuando un filosofo puede comer
+void test(int i){
+	if((state[i] == HUNGRY) && (state[LEFT] != EATING) && (state[RIGHT] != EATING)){
+		state[i] = EATING;
+		printf("Soy el filosofo %d comiendo\n", i);
+		sem_post(&S[i]);
+	}
+}
+//Cuando un filosofo esta pensando
+void put_forks(int i){
+	sem_wait(&mutex);
+	state[i] = THINKING;
+	printf("Soy el filosofo %d pensando\n", i);
+	test(LEFT);
+	test(RIGHT);
+	sem_post(&mutex);
+}
+//Para que el filosofo cambie a hambriento
+void take_fork(int i){
+	sem_wait(&mutex);
+	state[i] = HUNGRY;
+	test(i);
+	sem_post(&mutex);
+	sem_wait(&S[i]);
+}
+void think(int i){//Cuando el filosofo esta pensando
+}
+void eat(int i){//Cuando el filosofo esta comiendo
+}
+void philosopher(int i){//Funciones que ejecutan los filosofos
+	while(1){
+		think(i);
+		take_fork(i);
+		eat(i);
+		put_forks(i);
+	}
+}
